@@ -21,7 +21,7 @@ def check_certificate(url):
               + " < /dev/null | openssl x509 -inform pem -noout -text"
     proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     result = proc.stdout.read()
-    if "unable to load certificate" in result:
+    if not result or "unable to load certificate" in result:
         return False
     cert = {
         "subject": {
@@ -98,7 +98,8 @@ def find(prefix, line):
 def format_result(cert):
     if not cert:
         return {
-            "result": "SUSPICIOUS"
+            "result": "SUSPICIOUS",
+            "info": None
         }
 
     result = "CLEAN"
